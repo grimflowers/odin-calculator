@@ -152,13 +152,20 @@ calculator.querySelector('.equal').addEventListener('click', handleEqual);
 
 // Keyboard support
 document.addEventListener('keypress', function(e) {
-    e.preventDefault();
+    let validKey = false;
 
     if(isNum(e.key)) {
         handleNum(e.key);
+        validKey = true;
     } else if (isOperator(e.key)) {
         handleOperator(e.key);
+        validKey = true;
     } else if (e.key === '=' || e.key === 'Enter') {
         handleEqual();
+        validKey = true;
+    }
+
+    if (validKey) {
+        e.preventDefault();
     }
 });
