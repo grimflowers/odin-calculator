@@ -23,6 +23,20 @@ body {
     height: 25%;
     margin: 5px;
     border: 2px solid black;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-end;
+    overflow: hidden;
+    padding: 10px;
+}
+
+.expression {
+    font-size: 2rem;
+}
+
+.result {
+    font-size: 3rem;
 }
 
 .controlPanel {
@@ -42,3 +56,5 @@ body {
     margin: 5px;
     overflow: hidden
 }
+
+
