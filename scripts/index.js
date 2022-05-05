@@ -33,6 +33,14 @@ function _operate(operator, operand1, operand2) {
     }
 }
 
+function isNum(str) {
+    return !isNaN(str);
+}
+
+function isOperator(str) {
+    return '+*-/'.includes(str);
+}
+
 function resetCalculator() {
     operand1 = '';
     operand2 = '';
@@ -53,78 +61,104 @@ function displayError(str='ERROR') {
     result.textContent = str;
 }
 
-let operand1 = '';
-let operand2 = '';
-let operator = '';
-let inExpression = false;
-let resultFound  = true;
+function handleNum(newNum) {
+    if (resultFound) {
+        resetCalculator();
+    }
 
-// Add listeners to control panel
-let calc = document.querySelector('.calculator');
+    let calculator = document.querySelector('.calculator');
+    let expression = calculator.querySelector('.expression');
+    let currentExpression = expression.textContent;
 
-// Add number button handlers
-calc.querySelectorAll('.num').forEach(function(numBtn) {
-    numBtn.addEventListener('click', function(e) {
-        if (resultFound) {
-            resetCalculator();
-        }
+    if (inExpression) {
+        operand2 += newNum;
+    } else {
+        operand1 += newNum;
+    }
 
-        let expression = calc.querySelector('.expression');
-        let num = e.target.getAttribute('data-key');
-        let currentExpression = expression.textContent;
+    currentExpression += newNum;
+    expression.textContent = currentExpression;
+}
 
-        if (inExpression) {
-            operand2 += num;
-        } else {
-            operand1 += num;
-        }
-
-        currentExpression += num;
-        expression.textContent = currentExpression;
-    });
-});
-
-// Add operator button handlers
-calc.querySelectorAll('.operator').forEach(function(opBtn) {
-    opBtn.addEventListener('click', function(e) {
-        let expression = calc.querySelector('.expression');
+function handleOperator(newOperator) {
+    let calculator = document.querySelector('.calculator');
+    let expression = calculator.querySelector('.expression');
         
-        if (resultFound) {
-            let result = calc.querySelector('.result').textContent;
-            resetCalculator();
-            operand1 = result;
-            expression.textContent = operand1;
-        }
+    if (resultFound) {
+        let result = calculator.querySelector('.result').textContent;
+        resetCalculator();
+        operand1 = result;
+        expression.textContent = operand1;
+    }
 
-        let currentExpression = expression.textContent;
-        operator = e.target.getAttribute('data-key');
+    let currentExpression = expression.textContent;
+    operator = newOperator;
 
-        if (inExpression || !operand1) {
-            displayError();
-        } else {
-            inExpression = true;
-            currentExpression += ` ${operator} `;
-            expression.textContent = currentExpression;
-        }
-    });
-});
+    if (inExpression || !operand1) {
+        displayError();
+    } else {
+        inExpression = true;
+        currentExpression += ` ${newOperator} `;
+        expression.textContent = currentExpression;
+    }
+}
 
-// Add clear button handler
-calc.querySelector('.clear').addEventListener('click', resetCalculator);
+function handleEqual() {
+    let calculator = document.querySelector('.calculator');
 
-// Add equal button handler
-calc.querySelector('.equal').addEventListener('click', function(e) {
     if (!operand1 || !operator || !operand2) {
         displayError();
     } else {
         try {
             let answer = _operate(operator, parseInt(operand1), parseInt(operand2));
             resultFound = true;
-            calc.querySelector('.result').textContent = answer;
+            calculator.querySelector('.result').textContent = answer;
         } catch (e) {
             if (e.name === "RangeError") {
                 displayError('ERROR: Cannot Divide By Zero');
             }
         }
+    }
+}
+
+let operand1 = '';
+let operand2 = '';
+let operator = '';
+let inExpression = false;
+let resultFound  = true;
+
+// Add listeners to calculator
+let calculator = document.querySelector('.calculator');
+
+// Add number button handlers
+calculator.querySelectorAll('.num').forEach(function(numBtn) {
+    numBtn.addEventListener('click', function(e) {
+        handleNum(e.target.getAttribute('data-key'));
+    });
+});
+
+// Add operator button handlers
+calculator.querySelectorAll('.operator').forEach(function(opBtn) {
+    opBtn.addEventListener('click', function(e) {
+        handleOperator(e.target.getAttribute('data-key'));
+    });
+});
+
+// Add clear button handler
+calculator.querySelector('.clear').addEventListener('click', resetCalculator);
+
+// Add equal button handler
+calculator.querySelector('.equal').addEventListener('click', handleEqual);
+
+// Keyboard support
+document.addEventListener('keypress', function(e) {
+    e.preventDefault();
+
+    if(isNum(e.key)) {
+        handleNum(e.key);
+    } else if (isOperator(e.key)) {
+        handleOperator(e.key);
+    } else if (e.key === '=' || e.key === 'Enter') {
+        handleEqual();
     }
 });
