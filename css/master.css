@@ -17,7 +17,7 @@ body {
     flex-direction: column;
     justify-content: space-between;
     min-width: 400px;
-    min-height: 165px;
+    min-height: 400px;
 }
 
 .display {
