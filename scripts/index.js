@@ -45,7 +45,6 @@ function resetCalculator() {
     operand1 = '';
     operand2 = '';
     operator = '';
-    inExpression = false;
     resultFound  = false;
 
     let calculator = document.querySelector('.calculator');
@@ -54,11 +53,11 @@ function resetCalculator() {
     calculator.querySelector('.result').textContent = '';
 }
 
-function displayError(str='ERROR') {
+function displayError() {
     resetCalculator();
     let calculator = document.querySelector('.calculator');
     let result = calculator.querySelector('.result')
-    result.textContent = str;
+    result.textContent = 'ERROR';
 }
 
 function handleNum(newNum) {
@@ -70,7 +69,7 @@ function handleNum(newNum) {
     let expression = calculator.querySelector('.expression');
     let currentExpression = expression.textContent;
 
-    if (inExpression) {
+    if (operator) {
         operand2 += newNum;
     } else {
         operand1 += newNum;
@@ -83,7 +82,7 @@ function handleNum(newNum) {
 function handleOperator(newOperator) {
     let calculator = document.querySelector('.calculator');
     let expression = calculator.querySelector('.expression');
-        
+
     if (resultFound) {
         let result = calculator.querySelector('.result').textContent;
         resetCalculator();
@@ -92,14 +91,21 @@ function handleOperator(newOperator) {
     }
 
     let currentExpression = expression.textContent;
-    operator = newOperator;
 
-    if (inExpression || !operand1) {
+    if ((operator && !operand2) || !operand1) {
         displayError();
+    } else if (operand2) {
+        let answer = _operate(operator, parseInt(operand1), parseInt(operand2));
+        let resultDiv = calculator.querySelector('.result');
+        resetCalculator();
+        expression.textContent = `${answer} ${newOperator} `;
+        resultDiv.textContent = answer;
+        operand1 = answer;
+        operator = newOperator;
     } else {
-        inExpression = true;
         currentExpression += ` ${newOperator} `;
         expression.textContent = currentExpression;
+        operator = newOperator;
     }
 }
 
@@ -115,7 +121,7 @@ function handleEqual() {
             calculator.querySelector('.result').textContent = answer;
         } catch (e) {
             if (e.name === "RangeError") {
-                displayError('ERROR: Cannot Divide By Zero');
+                displayError();
             }
         }
     }
@@ -124,7 +130,6 @@ function handleEqual() {
 let operand1 = '';
 let operand2 = '';
 let operator = '';
-let inExpression = false;
 let resultFound  = true;
 
 // Add listeners to calculator
@@ -163,6 +168,9 @@ document.addEventListener('keypress', function(e) {
     } else if (e.key === '=' || e.key === 'Enter') {
         handleEqual();
         validKey = true;
+    } else if (e.key.toLowerCase() === 'c') {
+        validKey = true;
+        resetCalculator();
     }
 
     if (validKey) {
