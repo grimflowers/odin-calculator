@@ -25,6 +25,7 @@ body {
     justify-content: space-between;
     min-width: 400px;
     min-height: 400px;
+    max-width: 400px;
     background-color: #4c5270;
     padding: 8px;
 }
@@ -68,7 +69,7 @@ footer {
 .controlPanel {
     display: grid;
     grid-template-rows: repeat(4, minmax(0, 1fr));
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
     grid-gap: 5%;
     border: 2px solid var(--green);
     border-radius: 2%;
@@ -86,4 +87,8 @@ footer {
     font-family: 'Orbitron', sans-serif;
     color: var(--pink);
     background-color: var(--grey);
+}
+
+.btn[data-key="+"] {
+    grid-column: span 2;
 }

@@ -18,6 +18,10 @@ function _divide(x, y) {
     return (x / y).toPrecision(4);
 }
 
+function _pow(x, y) {
+    return Math.pow(x, y).toPrecision(4);
+}
+
 function _operate(operator, operand1, operand2) {
     switch (operator) {
         case '+':
@@ -28,6 +32,8 @@ function _operate(operator, operand1, operand2) {
             return _multiply(operand1, operand2);
         case '/':
             return _divide(operand1, operand2);
+        case '^':
+            return _pow(operand1, operand2);
         default:
             console.log(`Unknown Operator: ${operator}`);
     }
@@ -42,7 +48,7 @@ function isFloat(str) {
 }
 
 function isOperator(str) {
-    return '+*-/'.includes(str);
+    return '+*-/^'.includes(str);
 }
 
 function getNum(str) {
@@ -186,7 +192,7 @@ function handleBackspace() {
 function handlePeriod() {
     let expression = document.querySelector('.expression');
 
-    if (operand2) {
+    if (operand2 || operator) {
         if(isFloat(operand2)) {
             resetCalculator();
             displayError();
@@ -194,9 +200,6 @@ function handlePeriod() {
             operand2 += '.';
             expression.textContent = expression.textContent + '.';
         }
-    } else if (operator) {
-        resetCalculator();
-        displayError();
     } else if (operand1) {
         if (isFloat(operand1)) {
             resetCalculator();
@@ -209,6 +212,10 @@ function handlePeriod() {
         resetCalculator();
         displayError();
     }
+}
+
+function handlePi() {
+    handleNum('3.14159');
 }
 
 // Globals =(
@@ -240,6 +247,11 @@ calculator.querySelector('.clear').addEventListener('click', resetCalculator);
 // Add equal button handler
 calculator.querySelector('.equal').addEventListener('click', handleEqual);
 
+// Add period button handler
+calculator.querySelector('.period').addEventListener('click', handlePeriod);
+
+calculator.querySelector('.constant').addEventListener('click', handlePi);
+
 // Keyboard support
 document.addEventListener('keydown', function(e) {
     let validKey = false;
@@ -262,6 +274,12 @@ document.addEventListener('keydown', function(e) {
     } else if (e.key === '.') {
         validKey = true;
         handlePeriod();
+    } else if (e.key === '^') {
+        validKey = true;
+        handleOperator();
+    } else if (e.key === 'p') {
+        validKey = true;
+        handlePi();
     }
 
     if (validKey) {
