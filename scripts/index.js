@@ -15,7 +15,7 @@ function _divide(x, y) {
         throw new RangeError("Cannot divide by zero");
     }
 
-    return x / y;
+    return (x / y).toPrecision(4);
 }
 
 function _operate(operator, operand1, operand2) {
@@ -50,18 +50,6 @@ function getNum(str) {
         return parseFloat(str);
     } else {
         return parseInt(str);
-    }
-}
-
-function formatAnswer(str) {
-    if (isFloat(str)) {
-        if (str.length > 8) {
-            return str.slice(0, 9);
-        } else {
-            return str;
-        }
-    } else {
-        return str;
     }
 }
 
@@ -125,16 +113,20 @@ function handleOperator(newOperator) {
             displayError();
         } else {
             let answer = _operate(operator, getNum(operand1), parseInt(operand2));
-            answer = formatAnswer(answer.toString());
 
-            let resultDiv = calculator.querySelector('.result');
+            if (answer.toString().length > 8) {
+                resetCalculator();
+                displayError();
+            } else {
+                let resultDiv = calculator.querySelector('.result');
 
-            resetCalculator();
+                resetCalculator();
 
-            expression.textContent = `${answer} ${newOperator} `;
-            resultDiv.textContent = answer;
-            operand1 = answer;
-            operator = newOperator;
+                expression.textContent = `${answer} ${newOperator} `;
+                resultDiv.textContent = answer;
+                operand1 = answer;
+                operator = newOperator;
+            }
         }
     } else {
         currentExpression += ` ${newOperator} `;
@@ -155,9 +147,14 @@ function handleEqual() {
                 displayError();
             } else {
                 let answer = _operate(operator, getNum(operand1), parseInt(operand2));
-                answer = formatAnswer(answer.toString());
-                resultFound = true;
-                calculator.querySelector('.result').textContent = answer;
+
+                if (answer.toString().length > 8) {
+                    resetCalculator();
+                    displayError();
+                } else {
+                    resultFound = true;
+                    calculator.querySelector('.result').textContent = answer;
+                }
             }
         } catch (e) {
             if (e.name === "RangeError") {
