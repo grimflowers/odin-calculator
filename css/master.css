@@ -29,6 +29,14 @@ body {
     padding: 8px;
 }
 
+.container {
+    color: var(--grey);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+}
+
 .display {
     height: 25%;
     margin: 5px;
@@ -46,6 +54,10 @@ body {
 .expression {
     font-size: 2rem;
     color: var(--grey);
+}
+
+footer {
+    justify-self: flex-end;
 }
 
 .result {
