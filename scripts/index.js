@@ -54,10 +54,12 @@ function getNum(str) {
 }
 
 function formatAnswer(str) {
-    if (str.length > 8) {
-        return str.slice(0, 9);
-    } else {
-        return str;
+    if (isFloat(str)) {
+        if (str.length > 8) {
+            return str.slice(0, 9);
+        } else {
+            return str;
+        }
     }
 }
 
@@ -114,6 +116,7 @@ function handleOperator(newOperator) {
 
     if ((operator && !operand2) || !operand1) {
         displayError();
+    // Handle user entering multi-operator expression
     } else if (operand2) {
         let answer = _operate(operator, getNum(operand1), parseInt(operand2));
         answer = formatAnswer(answer.toString());
@@ -152,6 +155,7 @@ function handleEqual() {
     }
 }
 
+// Allow user to delete accidental input
 function handleBackspace() {
     let expression = document.querySelector('.expression');
     let currentExpression = expression.textContent;
@@ -170,6 +174,7 @@ function handleBackspace() {
     }
 }
 
+// Globals =(
 let operand1 = '';
 let operand2 = '';
 let operator = '';
