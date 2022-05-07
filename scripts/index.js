@@ -60,6 +60,8 @@ function formatAnswer(str) {
         } else {
             return str;
         }
+    } else {
+        return str;
     }
 }
 
@@ -118,17 +120,22 @@ function handleOperator(newOperator) {
         displayError();
     // Handle user entering multi-operator expression
     } else if (operand2) {
-        let answer = _operate(operator, getNum(operand1), parseInt(operand2));
-        answer = formatAnswer(answer.toString());
+        if (operand1.length > 8 || operand2.length > 8) {
+            resetCalculator();
+            displayError();
+        } else {
+            let answer = _operate(operator, getNum(operand1), parseInt(operand2));
+            answer = formatAnswer(answer.toString());
 
-        let resultDiv = calculator.querySelector('.result');
+            let resultDiv = calculator.querySelector('.result');
 
-        resetCalculator();
+            resetCalculator();
 
-        expression.textContent = `${answer} ${newOperator} `;
-        resultDiv.textContent = answer;
-        operand1 = answer;
-        operator = newOperator;
+            expression.textContent = `${answer} ${newOperator} `;
+            resultDiv.textContent = answer;
+            operand1 = answer;
+            operator = newOperator;
+        }
     } else {
         currentExpression += ` ${newOperator} `;
         expression.textContent = currentExpression;
@@ -143,10 +150,15 @@ function handleEqual() {
         displayError();
     } else {
         try {
-            let answer = _operate(operator, getNum(operand1), parseInt(operand2));
-            answer = formatAnswer(answer.toString());
-            resultFound = true;
-            calculator.querySelector('.result').textContent = answer;
+            if (operand1.length > 8 || operand2.length > 8) {
+                resetCalculator();
+                displayError();
+            } else {
+                let answer = _operate(operator, getNum(operand1), parseInt(operand2));
+                answer = formatAnswer(answer.toString());
+                resultFound = true;
+                calculator.querySelector('.result').textContent = answer;
+            }
         } catch (e) {
             if (e.name === "RangeError") {
                 displayError();
