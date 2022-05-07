@@ -37,8 +37,28 @@ function isNum(str) {
     return !isNaN(str);
 }
 
+function isFloat(str) {
+    return (isNum(str) && str.indexOf('.') !== -1);
+}
+
 function isOperator(str) {
     return '+*-/'.includes(str);
+}
+
+function getNum(str) {
+    if (isFloat(str)) {
+        return parseFloat(str);
+    } else {
+        return parseInt(str);
+    }
+}
+
+function formatAnswer(str) {
+    if (str.length > 8) {
+        return str.slice(0, 9);
+    } else {
+        return str;
+    }
 }
 
 function resetCalculator() {
@@ -95,9 +115,13 @@ function handleOperator(newOperator) {
     if ((operator && !operand2) || !operand1) {
         displayError();
     } else if (operand2) {
-        let answer = _operate(operator, parseInt(operand1), parseInt(operand2));
+        let answer = _operate(operator, getNum(operand1), parseInt(operand2));
+        answer = formatAnswer(answer.toString());
+
         let resultDiv = calculator.querySelector('.result');
+
         resetCalculator();
+
         expression.textContent = `${answer} ${newOperator} `;
         resultDiv.textContent = answer;
         operand1 = answer;
@@ -116,7 +140,8 @@ function handleEqual() {
         displayError();
     } else {
         try {
-            let answer = _operate(operator, parseInt(operand1), parseInt(operand2));
+            let answer = _operate(operator, getNum(operand1), parseInt(operand2));
+            answer = formatAnswer(answer.toString());
             resultFound = true;
             calculator.querySelector('.result').textContent = answer;
         } catch (e) {
