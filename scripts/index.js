@@ -112,7 +112,7 @@ function handleOperator(newOperator) {
             resetCalculator();
             displayError();
         } else {
-            let answer = _operate(operator, getNum(operand1), parseInt(operand2));
+            let answer = _operate(operator, getNum(operand1), getNum(operand2));
 
             if (answer.toString().length > 8) {
                 resetCalculator();
@@ -146,7 +146,7 @@ function handleEqual() {
                 resetCalculator();
                 displayError();
             } else {
-                let answer = _operate(operator, getNum(operand1), parseInt(operand2));
+                let answer = _operate(operator, getNum(operand1), getNum(operand2));
 
                 if (answer.toString().length > 8) {
                     resetCalculator();
@@ -183,11 +183,39 @@ function handleBackspace() {
     }
 }
 
+function handlePeriod() {
+    let expression = document.querySelector('.expression');
+
+    if (operand2) {
+        if(isFloat(operand2)) {
+            resetCalculator();
+            displayError();
+        } else {
+            operand2 += '.';
+            expression.textContent = expression.textContent + '.';
+        }
+    } else if (operator) {
+        resetCalculator();
+        displayError();
+    } else if (operand1) {
+        if (isFloat(operand1)) {
+            resetCalculator();
+            displayError();
+        } else {
+            operand1 += '.';
+            expression.textContent = expression.textContent + '.';
+        }
+    } else {
+        resetCalculator();
+        displayError();
+    }
+}
+
 // Globals =(
 let operand1 = '';
 let operand2 = '';
 let operator = '';
-let resultFound  = true;
+let resultFound  = false;
 
 // Add listeners to calculator
 let calculator = document.querySelector('.calculator');
@@ -231,6 +259,9 @@ document.addEventListener('keydown', function(e) {
     } else if (e.key === 'Backspace') {
         validKey = true;
         handleBackspace();
+    } else if (e.key === '.') {
+        validKey = true;
+        handlePeriod();
     }
 
     if (validKey) {
