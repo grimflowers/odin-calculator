@@ -127,6 +127,24 @@ function handleEqual() {
     }
 }
 
+function handleBackspace() {
+    let expression = document.querySelector('.expression');
+    let currentExpression = expression.textContent;
+
+    if (!document.querySelector('.result').textContent) {
+        if (operand2) {
+            operand2 = operand2.slice(0, operand2.length - 1);
+            expression.textContent = currentExpression.slice(0, currentExpression.length - 1);
+        } else if (operator) {
+            operator = '';
+            expression.textContent = currentExpression.slice(0, currentExpression.length - 3);
+        } else if (operand1) {
+            operand1 = operand1.slice(0, operand1.length - 1);
+            expression.textContent = currentExpression.slice(0, currentExpression.length - 1);
+        }
+    }
+}
+
 let operand1 = '';
 let operand2 = '';
 let operator = '';
@@ -156,7 +174,7 @@ calculator.querySelector('.clear').addEventListener('click', resetCalculator);
 calculator.querySelector('.equal').addEventListener('click', handleEqual);
 
 // Keyboard support
-document.addEventListener('keypress', function(e) {
+document.addEventListener('keydown', function(e) {
     let validKey = false;
 
     if(isNum(e.key)) {
@@ -171,6 +189,9 @@ document.addEventListener('keypress', function(e) {
     } else if (e.key.toLowerCase() === 'c') {
         validKey = true;
         resetCalculator();
+    } else if (e.key === 'Backspace') {
+        validKey = true;
+        handleBackspace();
     }
 
     if (validKey) {
